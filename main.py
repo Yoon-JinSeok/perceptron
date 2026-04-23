@@ -32,49 +32,51 @@ def show_truth_table(gate_func, gate_name):
     st.dataframe(pd.DataFrame(rows), use_container_width=False)
 
 # ------------------------------------------------------
-# 좌표평면 시각화 헬퍼
-#   - 점: 출력 0 → 파란색, 출력 1 → 빨간색
-#   - 직선: x1*w1 + x2*w2 + b = 0
+# 좌표평면 시각화 헬퍼  (크기 축소 버전)
 # ------------------------------------------------------
 def plot_gate_plane(gate_func, title, w1=None, w2=None, b=None, draw_line=True):
-    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    # 🔻 figsize 대폭 축소 (4.5 → 2.6)
+    fig, ax = plt.subplots(figsize=(2.6, 2.6), dpi=100)
 
     # 점 그리기
     for x in xArray:
         out = gate_func(x)
         color = "red" if out == 1 else "blue"
-        ax.scatter(x[0], x[1], color=color, s=250, zorder=3,
-                   edgecolor="black", linewidth=1.2)
-        ax.annotate(f"({x[0]},{x[1]}) → {out}", (x[0], x[1]),
-                    textcoords="offset points", xytext=(10, 10), fontsize=10)
+        ax.scatter(x[0], x[1], color=color, s=80, zorder=3,
+                   edgecolor="black", linewidth=0.8)
+        ax.annotate(f"({x[0]},{x[1]})→{out}", (x[0], x[1]),
+                    textcoords="offset points", xytext=(5, 5), fontsize=7)
 
-    # 결정 경계 직선 그리기
+    # 결정 경계 직선
     if draw_line and (w1 is not None) and (w2 is not None) and (b is not None):
         xs = np.linspace(-0.5, 1.5, 200)
         if w2 != 0:
             ys = -(w1 * xs + b) / w2
-            ax.plot(xs, ys, "g-", linewidth=2,
-                    label=f"{w1}·x1 + {w2}·x2 + {b} = 0")
+            ax.plot(xs, ys, "g-", linewidth=1.5,
+                    label=f"{w1}·x1+{w2}·x2+{b}=0")
         elif w1 != 0:
             xv = -b / w1
-            ax.axvline(xv, color="green", linewidth=2,
-                       label=f"x1 = {xv}")
+            ax.axvline(xv, color="green", linewidth=1.5,
+                       label=f"x1={xv}")
         else:
-            # w1 = w2 = 0: 직선 없음
             ax.text(0.5, -0.35, "※ w1=w2=0",
-                    ha="center", color="green", fontsize=10)
+                    ha="center", color="green", fontsize=7)
 
     ax.set_xlim(-0.5, 1.5)
     ax.set_ylim(-0.5, 1.5)
     ax.axhline(0, color="gray", linewidth=0.5)
     ax.axvline(0, color="gray", linewidth=0.5)
     ax.grid(True, alpha=0.3)
-    ax.set_xlabel("x1")
-    ax.set_ylabel("x2")
-    ax.set_title(title)
+    ax.set_xlabel("x1", fontsize=8)
+    ax.set_ylabel("x2", fontsize=8)
+    ax.set_title(title, fontsize=9)
+    ax.tick_params(axis="both", labelsize=7)
     if draw_line:
-        ax.legend(loc="upper right", fontsize=9)
-    st.pyplot(fig)
+        ax.legend(loc="upper right", fontsize=6)
+    fig.tight_layout()
+
+    # 🔻 use_container_width=False 로 컬럼 폭에 맞춰 확대되지 않게
+    st.pyplot(fig, use_container_width=False)
     plt.close(fig)
 
 # ======================================================
@@ -141,7 +143,8 @@ def AndGate(x):
     st.session_state["AndGate"] = AndGate
 
     st.subheader("✅ AND 게이트 출력값")
-    col_t, col_p = st.columns([1, 1])
+    # 🔻 컬럼 비율 조정 + 뒤에 여백 컬럼 추가로 그래프가 왼쪽으로 모이게
+    col_t, col_p, _ = st.columns([1, 1, 2])
     with col_t:
         show_truth_table(AndGate, "AND")
     with col_p:
@@ -176,7 +179,7 @@ def OrGate(x):
     st.session_state["OrGate"] = OrGate
 
     st.subheader("✅ OR 게이트 출력값")
-    col_t, col_p = st.columns([1, 1])
+    col_t, col_p, _ = st.columns([1, 1, 2])
     with col_t:
         show_truth_table(OrGate, "OR")
     with col_p:
@@ -211,7 +214,7 @@ def NandGate(x):
     st.session_state["NandGate"] = NandGate
 
     st.subheader("✅ NAND 게이트 출력값")
-    col_t, col_p = st.columns([1, 1])
+    col_t, col_p, _ = st.columns([1, 1, 2])
     with col_t:
         show_truth_table(NandGate, "NAND")
     with col_p:
@@ -264,10 +267,9 @@ def XorGate(x):
         """)
 
         st.subheader("✅ XOR 게이트 출력값")
-        col_t, col_p = st.columns([1, 1])
+        col_t, col_p, _ = st.columns([1, 1, 2])
         with col_t:
             show_truth_table(XorGate, "XOR")
         with col_p:
-            # XOR은 단일 선형 분리가 불가능하므로 점만 표시
             plot_gate_plane(XorGate, "XOR (선형 분리 불가)", draw_line=False)
             st.caption("※ XOR은 하나의 직선으로 분리할 수 없으므로 결정 경계선을 그리지 않습니다.")
