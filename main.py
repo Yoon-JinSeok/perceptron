@@ -227,10 +227,10 @@ with tab5:
     st.header("5단계. XOR 게이트")
     st.code('''
 def XorGate(x):
-    y1 = NandGate(x)   # ← 드롭다운으로 선택
-    y2 = OrGate(x)     # ← 드롭다운으로 선택
+    y1 = _____Gate(x)   # ← 드롭다운으로 선택
+    y2 = _____Gate(x)     # ← 드롭다운으로 선택
     y  = np.array([y1, y2])
-    return AndGate(y)  # ← 드롭다운으로 선택
+    return _____Gate(y)  # ← 드롭다운으로 선택
 ''', language="python")
 
     required = ["AndGate", "OrGate", "NandGate"]
