@@ -1,121 +1,209 @@
 # app.py
 import numpy as np
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
-# ------------------------------
-# 활성화 함수 정의하기
-# ------------------------------
+st.set_page_config(page_title="퍼셉트론 논리 게이트 단계별 학습", page_icon="🧠", layout="wide")
+st.title("🧠 퍼셉트론 기반 논리 게이트 — 단계별 실행")
+
+# ======================================================
+# 공통 함수 (1단계에서 소개)
+# ======================================================
 def activation(y):
     if y > 0:
         return 1
     else:
         return 0
 
-# ------------------------------
-# 퍼셉트론 정의하기
-# ------------------------------
 def perceptron(x, w, b):
     return activation(sum(x * w) + b)
 
-# ------------------------------
-# 진리표 입력 데이터
-# ------------------------------
 xArray = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 
-# ------------------------------
-# Streamlit UI 시작
-# ------------------------------
-st.set_page_config(page_title="퍼셉트론 논리 게이트", page_icon="🧠", layout="wide")
-st.title("🧠 퍼셉트론 기반 논리 게이트 시뮬레이터")
-st.caption("AND / OR / NAND 게이트의 가중치(w1, w2)와 편향(b)을 직접 설정하고, XOR 게이트의 내부 구성도 드롭박스로 선택해 보세요.")
+# 진리표 출력용 헬퍼
+def show_truth_table(gate_func, gate_name):
+    rows = []
+    for x in xArray:
+        rows.append({"x1": int(x[0]), "x2": int(x[1]), gate_name: gate_func(x)})
+    st.dataframe(pd.DataFrame(rows), use_container_width=False)
 
-# ------------------------------
-# 사이드바: 각 게이트의 w1, w2, b 입력
-# ------------------------------
-st.sidebar.header("⚙️ 게이트 파라미터 설정")
+# ======================================================
+# 탭 구성
+# ======================================================
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "1️⃣ 기본 코드",
+    "2️⃣ AND 게이트",
+    "3️⃣ OR 게이트",
+    "4️⃣ NAND 게이트",
+    "5️⃣ XOR 게이트",
+])
 
-st.sidebar.subheader("AND 게이트")
-and_w1 = st.sidebar.number_input("AND w1", value=1.0, step=1.0, key="and_w1")
-and_w2 = st.sidebar.number_input("AND w2", value=1.0, step=1.0, key="and_w2")
-and_b  = st.sidebar.number_input("AND b",  value=-1.0, step=1.0, key="and_b")
+# ------------------------------------------------------
+# 1단계: 활성화 함수 / 퍼셉트론 / 진리표 코드 확인
+# ------------------------------------------------------
+with tab1:
+    st.header("1단계. 활성화 함수, 퍼셉트론, 진리표")
+    st.code('''
+import numpy as np
 
-st.sidebar.subheader("OR 게이트")
-or_w1 = st.sidebar.number_input("OR w1", value=2.0, step=1.0, key="or_w1")
-or_w2 = st.sidebar.number_input("OR w2", value=3.0, step=1.0, key="or_w2")
-or_b  = st.sidebar.number_input("OR b",  value=-1.0, step=1.0, key="or_b")
+# 활성화 함수 정의
+def activation(y):
+    if y > 0:
+        return 1
+    else:
+        return 0
 
-st.sidebar.subheader("NAND 게이트")
-nand_w1 = st.sidebar.number_input("NAND w1", value=-1.0, step=1.0, key="nand_w1")
-nand_w2 = st.sidebar.number_input("NAND w2", value=-1.0, step=1.0, key="nand_w2")
-nand_b  = st.sidebar.number_input("NAND b",  value=2.0,  step=1.0, key="nand_b")
+# 퍼셉트론 정의
+def perceptron(x, w, b):
+    return activation(sum(x*w) + b)
 
-# ------------------------------
-# 게이트 함수 정의 (사용자 입력 적용)
-# ------------------------------
+# 진리표 입력 데이터
+xArray = np.array([[0,0], [0,1], [1,0], [1,1]])
+''', language="python")
+
+    st.subheader("📋 진리표 입력 데이터")
+    st.dataframe(pd.DataFrame(xArray, columns=["x1", "x2"]), use_container_width=False)
+    st.info("다음 단계(2단계)로 이동하여 AND 게이트를 설정해 보세요.")
+
+# ------------------------------------------------------
+# 2단계: AND 게이트
+# ------------------------------------------------------
+with tab2:
+    st.header("2단계. AND 게이트")
+    st.code('''
 def AndGate(x):
-    w = np.array([and_w1, and_w2])
-    b = and_b
+    w = np.array([w1, w2])
+    b = b
     return perceptron(x, w, b)
+''', language="python")
 
+    st.subheader("🔧 w1, w2, b 입력")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        and_w1 = st.number_input("w1", value=1.0, step=1.0, key="and_w1")
+    with c2:
+        and_w2 = st.number_input("w2", value=1.0, step=1.0, key="and_w2")
+    with c3:
+        and_b  = st.number_input("b",  value=-1.0, step=1.0, key="and_b")
+
+    def AndGate(x):
+        w = np.array([and_w1, and_w2])
+        b = and_b
+        return perceptron(x, w, b)
+
+    st.session_state["AndGate"] = AndGate
+
+    st.subheader("✅ AND 게이트 출력값")
+    show_truth_table(AndGate, "AND")
+
+# ------------------------------------------------------
+# 3단계: OR 게이트
+# ------------------------------------------------------
+with tab3:
+    st.header("3단계. OR 게이트")
+    st.code('''
 def OrGate(x):
-    w = np.array([or_w1, or_w2])
-    b = or_b
+    w = np.array([w1, w2])
+    b = b
     return perceptron(x, w, b)
+''', language="python")
 
+    st.subheader("🔧 w1, w2, b 입력")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        or_w1 = st.number_input("w1", value=2.0, step=1.0, key="or_w1")
+    with c2:
+        or_w2 = st.number_input("w2", value=3.0, step=1.0, key="or_w2")
+    with c3:
+        or_b  = st.number_input("b",  value=-1.0, step=1.0, key="or_b")
+
+    def OrGate(x):
+        w = np.array([or_w1, or_w2])
+        b = or_b
+        return perceptron(x, w, b)
+
+    st.session_state["OrGate"] = OrGate
+
+    st.subheader("✅ OR 게이트 출력값")
+    show_truth_table(OrGate, "OR")
+
+# ------------------------------------------------------
+# 4단계: NAND 게이트
+# ------------------------------------------------------
+with tab4:
+    st.header("4단계. NAND 게이트")
+    st.code('''
 def NandGate(x):
-    w = np.array([nand_w1, nand_w2])
-    b = nand_b
+    w = np.array([w1, w2])
+    b = b
     return perceptron(x, w, b)
+''', language="python")
 
-# ------------------------------
-# XOR 게이트: 드롭박스 선택
-# ------------------------------
-st.sidebar.subheader("XOR 게이트 구성")
-gate_options = {
-    "AndGate": AndGate,
-    "OrGate": OrGate,
-    "NandGate": NandGate,
-}
+    st.subheader("🔧 w1, w2, b 입력")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        nand_w1 = st.number_input("w1", value=-1.0, step=1.0, key="nand_w1")
+    with c2:
+        nand_w2 = st.number_input("w2", value=-1.0, step=1.0, key="nand_w2")
+    with c3:
+        nand_b  = st.number_input("b",  value=2.0, step=1.0, key="nand_b")
 
-y1_choice     = st.sidebar.selectbox("y1 =", list(gate_options.keys()), index=2)  # 기본 NandGate
-y2_choice     = st.sidebar.selectbox("y2 =", list(gate_options.keys()), index=1)  # 기본 OrGate
-return_choice = st.sidebar.selectbox("return =", list(gate_options.keys()), index=0)  # 기본 AndGate
+    def NandGate(x):
+        w = np.array([nand_w1, nand_w2])
+        b = nand_b
+        return perceptron(x, w, b)
 
+    st.session_state["NandGate"] = NandGate
+
+    st.subheader("✅ NAND 게이트 출력값")
+    show_truth_table(NandGate, "NAND")
+
+# ------------------------------------------------------
+# 5단계: XOR 게이트
+# ------------------------------------------------------
+with tab5:
+    st.header("5단계. XOR 게이트")
+    st.code('''
 def XorGate(x):
-    y1 = gate_options[y1_choice](x)
-    y2 = gate_options[y2_choice](x)
-    y = np.array([y1, y2])
-    return gate_options[return_choice](y)
+    y1 = NandGate(x)   # ← 드롭다운으로 선택
+    y2 = OrGate(x)     # ← 드롭다운으로 선택
+    y  = np.array([y1, y2])
+    return AndGate(y)  # ← 드롭다운으로 선택
+''', language="python")
 
-# ------------------------------
-# 결과 표 생성
-# ------------------------------
-rows = []
-for x in xArray:
-    rows.append({
-        "x1": int(x[0]),
-        "x2": int(x[1]),
-        "AND":  AndGate(x),
-        "OR":   OrGate(x),
-        "NAND": NandGate(x),
-        "XOR":  XorGate(x),
-    })
-df = pd.DataFrame(rows)
+    # 앞 단계에서 설정이 안 되었을 경우 경고
+    required = ["AndGate", "OrGate", "NandGate"]
+    missing = [g for g in required if g not in st.session_state]
+    if missing:
+        st.warning(f"⚠️ 먼저 다음 단계를 실행해 주세요: {', '.join(missing)}")
+    else:
+        st.subheader("🔽 y1, y2, return 드롭다운 선택")
+        gate_options = {
+            "AndGate":  st.session_state["AndGate"],
+            "OrGate":   st.session_state["OrGate"],
+            "NandGate": st.session_state["NandGate"],
+        }
 
-st.subheader("📊 진리표 결과")
-st.dataframe(df, use_container_width=True)
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            y1_choice = st.selectbox("y1 =", list(gate_options.keys()), index=2, key="xor_y1")
+        with c2:
+            y2_choice = st.selectbox("y2 =", list(gate_options.keys()), index=1, key="xor_y2")
+        with c3:
+            ret_choice = st.selectbox("return =", list(gate_options.keys()), index=0, key="xor_ret")
 
-# ------------------------------
-# 현재 설정 요약
-# ------------------------------
-with st.expander("🔎 현재 설정 값 보기"):
-    st.markdown(f"""
-    - **AND**: w = [{and_w1}, {and_w2}], b = {and_b}
-    - **OR**: w = [{or_w1}, {or_w2}], b = {or_b}
-    - **NAND**: w = [{nand_w1}, {nand_w2}], b = {nand_b}
-    - **XOR**:
+        def XorGate(x):
+            y1 = gate_options[y1_choice](x)
+            y2 = gate_options[y2_choice](x)
+            y  = np.array([y1, y2])
+            return gate_options[ret_choice](y)
+
+        st.markdown(f"""
+        **현재 구성**
         - y1 = `{y1_choice}(x)`
         - y2 = `{y2_choice}(x)`
-        - return = `{return_choice}([y1, y2])`
-    """)
+        - return = `{ret_choice}([y1, y2])`
+        """)
+
+        st.subheader("✅ XOR 게이트 출력값")
+        show_truth_table(XorGate, "XOR")
