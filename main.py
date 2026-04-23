@@ -271,5 +271,5 @@ def XorGate(x):
         with col_t:
             show_truth_table(XorGate, "XOR")
         with col_p:
-            plot_gate_plane(XorGate, "XOR (선형 분리 불가)", draw_line=False)
+            plot_gate_plane(XorGate, "XOR", draw_line=False)
             st.caption("※ XOR은 하나의 직선으로 분리할 수 없으므로 결정 경계선을 그리지 않습니다.")
