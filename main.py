@@ -80,11 +80,11 @@ def AndGate(x):
     st.subheader("🔧 w1, w2, b 입력")
     c1, c2, c3 = st.columns(3)
     with c1:
-        and_w1 = st.number_input("w1", value=1.0, step=1.0, key="and_w1")
+        and_w1 = st.number_input("w1", value=0.0, step=1.0, key="and_w1")
     with c2:
-        and_w2 = st.number_input("w2", value=1.0, step=1.0, key="and_w2")
+        and_w2 = st.number_input("w2", value=0.0, step=1.0, key="and_w2")
     with c3:
-        and_b  = st.number_input("b",  value=-1.0, step=1.0, key="and_b")
+        and_b  = st.number_input("b",  value=0.0, step=1.0, key="and_b")
 
     def AndGate(x):
         w = np.array([and_w1, and_w2])
@@ -111,11 +111,11 @@ def OrGate(x):
     st.subheader("🔧 w1, w2, b 입력")
     c1, c2, c3 = st.columns(3)
     with c1:
-        or_w1 = st.number_input("w1", value=2.0, step=1.0, key="or_w1")
+        or_w1 = st.number_input("w1", value=0.0, step=1.0, key="or_w1")
     with c2:
-        or_w2 = st.number_input("w2", value=3.0, step=1.0, key="or_w2")
+        or_w2 = st.number_input("w2", value=0.0, step=1.0, key="or_w2")
     with c3:
-        or_b  = st.number_input("b",  value=-1.0, step=1.0, key="or_b")
+        or_b  = st.number_input("b",  value=0.0, step=1.0, key="or_b")
 
     def OrGate(x):
         w = np.array([or_w1, or_w2])
@@ -142,11 +142,11 @@ def NandGate(x):
     st.subheader("🔧 w1, w2, b 입력")
     c1, c2, c3 = st.columns(3)
     with c1:
-        nand_w1 = st.number_input("w1", value=-1.0, step=1.0, key="nand_w1")
+        nand_w1 = st.number_input("w1", value=0.0, step=1.0, key="nand_w1")
     with c2:
-        nand_w2 = st.number_input("w2", value=-1.0, step=1.0, key="nand_w2")
+        nand_w2 = st.number_input("w2", value=0.0, step=1.0, key="nand_w2")
     with c3:
-        nand_b  = st.number_input("b",  value=2.0, step=1.0, key="nand_b")
+        nand_b  = st.number_input("b",  value=0.0, step=1.0, key="nand_b")
 
     def NandGate(x):
         w = np.array([nand_w1, nand_w2])
@@ -186,9 +186,9 @@ def XorGate(x):
 
         c1, c2, c3 = st.columns(3)
         with c1:
-            y1_choice = st.selectbox("y1 =", list(gate_options.keys()), index=2, key="xor_y1")
+            y1_choice = st.selectbox("y1 =", list(gate_options.keys()), index=0, key="xor_y1")
         with c2:
-            y2_choice = st.selectbox("y2 =", list(gate_options.keys()), index=1, key="xor_y2")
+            y2_choice = st.selectbox("y2 =", list(gate_options.keys()), index=0, key="xor_y2")
         with c3:
             ret_choice = st.selectbox("return =", list(gate_options.keys()), index=0, key="xor_ret")
 
