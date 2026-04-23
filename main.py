@@ -61,7 +61,7 @@ def plot_gate_plane(gate_func, title, w1=None, w2=None, b=None, draw_line=True):
                        label=f"x1 = {xv}")
         else:
             # w1 = w2 = 0: 직선 없음
-            ax.text(0.5, -0.35, "※ w1=w2=0 → 직선 없음",
+            ax.text(0.5, -0.35, "※ w1=w2=0",
                     ha="center", color="green", fontsize=10)
 
     ax.set_xlim(-0.5, 1.5)
