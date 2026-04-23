@@ -2,18 +2,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import koreanize_matplotlib
 import streamlit as st
-
-# 나눔고딕 폰트 경로 (Streamlit Cloud / Ubuntu 기준)
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
-
-try:
-    fm.fontManager.addfont(font_path)
-    plt.rcParams["font.family"] = "NanumGothic"
-except Exception:
-    plt.rcParams["font.family"] = "DejaVu Sans"
-
-plt.rcParams["axes.unicode_minus"] = False   # 마이너스 기호 깨짐 방지
 
 
 st.set_page_config(page_title="퍼셉트론 논리 게이트 단계별 학습", page_icon="🧠", layout="wide")
