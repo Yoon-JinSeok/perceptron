@@ -6,7 +6,7 @@ import streamlit as st
 
 
 st.set_page_config(page_title="퍼셉트론 논리 게이트 단계별 학습", page_icon="🧠", layout="wide")
-st.title("🧠 퍼셉트론 기반 논리 게이트 — 단계별 실행")
+st.title("🧠 퍼셉트론 기반 논리 게이트 — created by 윤진석")
 
 # ======================================================
 # 공통 함수
